@@ -1,6 +1,8 @@
 <?php
+
+    /* Se agregan estilos y scripts para poder usar en el front */
     function registerScriptsStyles() {
-       /*global style*/
+
        //wp_enqueue_style( 'global-font', 'http://fonts.googleapis.com/css?family=Raleway:400,800' );
        wp_enqueue_style( 'normalize', get_stylesheet_directory_uri().'/css/normalize.css' );
        wp_enqueue_style( 'webflow-css', get_stylesheet_directory_uri().'/css/webflow.css' );
@@ -16,9 +18,17 @@
 
     add_action( 'wp_enqueue_scripts', 'registerScriptsStyles' );
 
+    /* Se agrega script para poder usar en el admin */
+    function my_enqueue($hook) {       
+      wp_enqueue_script( 'ajax-script', get_stylesheet_directory_uri().'/js/admin-script.js', array('jquery'), '1.0.0', true);
+    }
+
+    add_action( 'admin_enqueue_scripts', 'my_enqueue' );
+
+    /* Agrega soporte para imagen destacada en los posts */
     add_theme_support( 'post-thumbnails' );
 
-    // Our custom post type function
+    /* Se crea custom post type ron (blanco, 3 años,7años, 15 años) */
     function create_posttype_ron() {
 
       register_post_type( 'ron',
@@ -38,19 +48,10 @@
         )
       );
     }
-    // Hooking up our function to theme setup
+
     add_action( 'init', 'create_posttype_ron' );
 
-
-
-    function my_enqueue($hook) {       
-      wp_enqueue_script( 'ajax-script', get_stylesheet_directory_uri().'/js/admin-script.js', array('jquery'), '1.0.0', true);
-    }
-
-    add_action( 'admin_enqueue_scripts', 'my_enqueue' );
-
-
-
+    /* Se agrega la opcion de subir imagenes para el custom post type ron, titulo, botella y medalla */
     function meta_box_images($post,$name)
     {
 
@@ -105,7 +106,7 @@
     add_action("add_meta_boxes", "add_custom_meta_box");
 
 
-
+    /* Se agregan los meta box para la seccion de ficha tecnica */
     function meta_box_data_sheet($post)
     {
         ?>
@@ -155,6 +156,7 @@
     add_action("add_meta_boxes", "add_mb_data_sheet");
 
 
+    /* Se agrega el meta box para cambiar el nombre del boton comprar del post type ron */
     function meta_box_buy($post)
     {
         ?>
@@ -167,7 +169,6 @@
 
     }
 
-
     function add_buy()
     {
         add_meta_box("meta-box-buy", "Comprar", "meta_box_buy", "ron", "normal", "low", null);
@@ -175,7 +176,7 @@
      
     add_action("add_meta_boxes", "add_buy");
 
-
+    /* Se agrega el meta box para cambiar el nombre y la imagen de la firma del post type ron */
     function meta_box_firm($post)
     { 
         $img_url = get_post_meta( $post->ID, '_image-firm', true );
@@ -213,7 +214,7 @@
 
     }
 
-
+    /* Se guarda la informacion de todos los metabox */
     function add_firm()
     {
         add_meta_box("meta-box-firm", "Firma", "meta_box_firm", "ron", "normal", "low", null);
@@ -260,9 +261,51 @@
     add_action('save_post', 'save_metabox');
 
 
+     function menu_page_admin()
+    {
+      add_menu_page('Home', 'Home(Seccion1)','manage_options','intro_data', 'intro_data','dashicons-welcome-view-site',6);
+    }
 
+    add_action( 'admin_menu', 'menu_page_admin' );
+ 
     
-
+    function intro_data(){
+      ?>
+      <div class="wrap">
+        <div id="poststuff">
+          <div id="post-body" class="metabox-holder columns-2">
+            <h1>Sección 1</h1>
+            <div id="post-body-content">
+              <div class="postbox-container" class="post-box-container">
+                <div id="normal-sortables">
+                  <div class="meta-box-sortables ui-sortable">
+                    <div id="container-mails" class="postbox">
+                      <h3 class="hndle ui-sortable-handle"><span class="title">Correos</span></h3>
+                      <div class="inside section-mails">
+                       
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="postbox-container-1" class="post-box-container">
+                <div class="meta-box-sortables ui-sortable">
+                  <div id="container-mails" class="postbox">
+                    <h3 class="hndle ui-sortable-handle"><span class="title">Correos</span></h3>
+                    <div class="inside section-mails">
+                     
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+      <?php
+      
+    }
    
 
 
